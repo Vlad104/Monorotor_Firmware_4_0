@@ -1,63 +1,62 @@
 #include "Dozator.h"
 
 Dozator::Dozator(PinName step_pin, PinName dir_pin) :
-    volume_(0), feedrate_(0), accel_(0)
+    // AccelStepper(1, step_pin, dir_pin),
+    AccelStepper(step_pin, dir_pin),
+    volume_(0), feedrate_(0.0), accel_(0.0)
 {
-    stepper_ = new AccelStepper(1, step_pin, dir_pin);
-    stepper_->setMinPulseWidth(PULSE_WIDTH);
-    stepper_->setMaxSpeed(MOTOR_MAX_SPEED); 
-    stepper_->setCurrentPosition(0);
-    stepper_->setPinsInverted(true, true, false);
+    setMinPulseWidth(PULSE_WIDTH);
+    setMaxSpeed(MOTOR_MAX_SPEED); 
+    setCurrentPosition(0);
+    setPinsInverted(true, true, false);
 }
 
-Dozator::~Dozator() {
-    delete stepper_;
+long local_round(float value) {
+    long floor_value = (long) value;
+    float mod = value - (float)floor_value;
+    return (mod > 0.5) ? floor_value + 1 : floor_value;
 }
 
 void Dozator::set_volume(float volume) {
-    volume_ = ((int32_t) volume) + 1;     // + 1 is rounds
+    volume_ = local_round(volume);
 }
 
 void Dozator::set_feedrate(float feedrate) {
-    feedrate_ = ((uint32_t) feedrate) + 1;   // + 1 is rounds
+    feedrate_ = feedrate;
 }
 
 void Dozator::set_accel(float accel) {
-    accel_ = ((uint32_t) accel) + 1;      // + 1 is rounds
+    accel_ = accel;
 }
 
 void Dozator::start_movement() {
-    stepper_->setCurrentPosition(0);
-    stepper_->setAcceleration(accel_);  
-    stepper_->move(volume_);
-    stepper_->setMaxSpeed(feedrate_);
+    setCurrentPosition(0);
+    setAcceleration(accel_);  
+    move(volume_);
+    setMaxSpeed(feedrate_);
 }
 
 void Dozator::stop_movement() {
-    stepper_->setCurrentPosition(0); 
-    stepper_->move(0);
+    setCurrentPosition(0); 
+    move(0);
 }
 
 void Dozator::continues_movement() {
-    stepper_->setCurrentPosition(0);
-    stepper_->setAcceleration(accel_);  
-    stepper_->move(1000000000);
-    stepper_->setMaxSpeed(feedrate_);   
+    setCurrentPosition(0);
+    setAcceleration(accel_);  
+    move(1000000000);
+    setMaxSpeed(feedrate_);   
 }
 
-void Dozator::run() { // inline
-    stepper_->run();
-}
-
-bool Dozator::stopped() { // inline
-    return stepper_->distanceToGo() == 0;
-}
+// bool Dozator::stopped() { // inline
+//     return distanceToGo() == 0;
+// }
 
 #ifdef TEST   
     void Dozator::print(Serial* port) {            
-        port->printf("\r\nDozator 1:\r\n");
-        port->printf("volume_: %d\r\n", volume_);
-        port->printf("feedrate_: %d\r\n", feedrate_);
-        port->printf("accel_: %d\r\n", accel_);
+        port->printf("\r\nDozator:\r\n");
+        port->printf("volume_: %ld\r\n", volume_);
+        port->printf("feedrate_: %f\r\n", feedrate_);
+        port->printf("accel_: %f\r\n", accel_);
     }
 #endif

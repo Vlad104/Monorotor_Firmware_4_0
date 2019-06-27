@@ -1,8 +1,6 @@
 #ifndef PARAMS_H
 #define PARAMS_H
 
-#include "mbed.h"
-
 #define TEST
 
 // PINS 
@@ -15,8 +13,14 @@
 #define UART_EN PC_12
 #define UART_TX PC_10 
 #define UART_RX PC_11 
+#define UART2_TX PA_9
+#define UART2_RX PA_10
 #define USB_TX  PA_2
 #define USB_RX  PA_3
+
+#define PEDAL     USER_BUTTON
+#define ALERT_A   PB_7
+#define ALERT_B   PB_11
 
 // UART
 #define UART_BAUDRATE 19200
@@ -28,7 +32,8 @@
 #define FLASH_FIELD_SIZE 8
 
 // STEPPER
-#define MOTOR_MAX_SPEED  50000
+#define MOTOR_MAX_SPEED  500000
 #define PULSE_WIDTH      10
+#define INFINITE         100000000
 
 #endif // PARAMS_H
