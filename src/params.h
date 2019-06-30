@@ -1,7 +1,7 @@
 #ifndef PARAMS_H
 #define PARAMS_H
 
-#define TEST
+// #define TEST
 
 // PINS 
 #define STEP_A  PC_0
@@ -20,7 +20,9 @@
 
 #define PEDAL     USER_BUTTON
 #define ALERT_A   PB_7
-#define ALERT_B   PB_11
+// #define ALERT_B   PB_11
+#define ALERT_B   PB_6
+
 
 // UART
 #define UART_BAUDRATE 19200
@@ -29,11 +31,11 @@
 // FLASH
 #define FLASH_START_ADR  0x0800FC00
 #define FLASH_PAGE_SIZES 1024
-#define FLASH_FIELD_SIZE 8
+#define FLASH_FIELD_SIZE 10
 
 // STEPPER
 #define MOTOR_MAX_SPEED  500000
-#define PULSE_WIDTH      10
+#define PULSE_WIDTH      8
 #define INFINITE         100000000
 
 #endif // PARAMS_H

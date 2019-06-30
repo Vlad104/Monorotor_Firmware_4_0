@@ -2,7 +2,8 @@
 
 MultiDozator::MultiDozator() {
     is_run_ = false;
-    // calculate_ratio(0.5);
+    times_A_ = 1;
+    times_B_ = 1;
 }
 
 MultiDozator::~MultiDozator() {}

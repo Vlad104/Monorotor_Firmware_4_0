@@ -53,6 +53,12 @@ private:
     void alert_fall_A();
     void alert_rise_B();
     void alert_fall_B();
+    
+    #ifdef TEST
+        Timer t_test;
+        long ms1;
+        long ms2;
+    #endif
 };
 
 #endif // CONTROLLER_H

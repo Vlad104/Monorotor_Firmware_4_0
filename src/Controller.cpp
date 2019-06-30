@@ -40,6 +40,9 @@ Controller::Controller() {
 
     #ifdef TEST
         usb_->printf("Monorotor Firmware 3.2\r\n");
+        ms1 = 0;
+        ms2 = 0;
+        t_test.start();
     #endif
 }
 
@@ -72,7 +75,13 @@ void Controller::serial_event(Serial* port) {
     last_port_ = port;
     char message_type = port->getc();
 
-    if (message_type == '=') {
+    if (message_type == '=') {    
+        #ifdef TEST
+            t_test.stop();
+            t_test.reset();
+            t_test.start();
+            ms1 = t_test.read_ms();      
+        #endif  
         read_command(port);
     } else if (message_type == '@') {
         read_params(port);
@@ -244,6 +253,11 @@ void Controller::single_loop(bool& was_stopped) {
 }
 
 void Controller::send_answer(Serial* port, char answer) {
+    #ifdef TEST   
+        ms2 = t_test.read_ms();
+        t_test.stop();
+        port->printf("\r\nT: %ld\r\n", ms2-ms1);
+    #endif
     transmit_enable_->write(1);
     port->putc(answer);
     transmit_enable_->write(0);

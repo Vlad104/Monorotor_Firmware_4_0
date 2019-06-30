@@ -54,54 +54,54 @@ public:
         }
     }
 
-    // void run(bool& was_stopped) {
-    //     switch (data_.dozator)
-    //     {
-    //     case 'D':
-    //         run_AB(was_stopped);
-    //         break;
-    //     case 'A':
-    //         run_A(was_stopped);
-    //         break;
-    //     case 'B':
-    //         run_A(was_stopped);
-    //         break;
-    //     default:
-    //         break;
-    //     }
-    // }
-
-    void run_AB(bool& was_stopped) {
-        int counter_A = 0;
-        int counter_B = 0;
-
-        // ход конем так сказать
-        while (dozator_A_->run() && counter_A++ < times_A_);
-        while (dozator_B_->run() && counter_B++ < times_B_);
-
-        if (is_run_ && (dozator_A_->distanceIsNull() || dozator_B_->distanceIsNull())) {
-            dozator_A_->stop();
-            dozator_B_->stop();
-            while (dozator_A_->run());
-            while (dozator_B_->run());
-            is_run_ = false;
-            was_stopped = true;
-        }
-    }
-
-    void run_A(bool& was_stopped) {
-        if (is_run_ && !dozator_A_->run()) {
-            is_run_ = false;
-            was_stopped = true;
-        }
-    }
-
-    void run_B(bool& was_stopped) {
-        if (is_run_ && !dozator_B_->run()) {
-            is_run_ = false;
-            was_stopped = true;
-        }
-    }
+//     void run(bool& was_stopped) {
+//         switch (data_.dozator)
+//         {
+//         case '2':
+//             run_AB(was_stopped);
+//             break;
+//         case '0':
+//             run_A(was_stopped);
+//             break;
+//         case '1':
+//             run_A(was_stopped);
+//             break;
+//         default:
+//             break;
+//         }
+//     }
+//
+//    void run_AB(bool& was_stopped) {
+//        int counter_A = 0;
+//        int counter_B = 0;
+//
+//        // ход конем так сказать
+//        while (dozator_A_->run() && counter_A++ < times_A_);
+//        while (dozator_B_->run() && counter_B++ < times_B_);
+//
+//        if (is_run_ && (dozator_A_->distanceIsNull() || dozator_B_->distanceIsNull())) {
+//            dozator_A_->stop();
+//            dozator_B_->stop();
+//            while (dozator_A_->run());
+//            while (dozator_B_->run());
+//            is_run_ = false;
+//            was_stopped = true;
+//        }
+//    }
+//
+//    void run_A(bool& was_stopped) {
+//        if (is_run_ && !dozator_A_->run()) {
+//            is_run_ = false;
+//            was_stopped = true;
+//        }
+//    }
+//
+//    void run_B(bool& was_stopped) {
+//        if (is_run_ && !dozator_B_->run()) {
+//            is_run_ = false;
+//            was_stopped = true;
+//        }
+//    }
 
     #ifdef TEST   
         void print(Serial* port);
@@ -110,22 +110,9 @@ public:
 private:
     struct DataModel {
         DataModel() :
-//            dozator('2'),
-//            volume(0.0),
-//            feedrate(0.0),
-//            accel(0.0),
-//            gear_A(1.0),
-//            gear_B(1.0),
-//            ratio_A(0.5),
-//            ratio_B(0.5)
-            dozator('2'),
-            volume(100.0),
-            feedrate(200.0),
-            accel(1000.0),
-            gear_A(2030.0),
-            gear_B(2030.0),
-            ratio_A(0.5),
-            ratio_B(0.5)
+            dozator('2'), volume(0.0), feedrate(0.0),
+            accel(0.0), gear_A(1.0), gear_B(1.0),
+            ratio_A(0.5), ratio_B(0.5)
         {}
         char    dozator;
         float   volume;     // ul

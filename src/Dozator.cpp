@@ -8,7 +8,7 @@ Dozator::Dozator(PinName step_pin, PinName dir_pin) :
     setMinPulseWidth(PULSE_WIDTH);
     setMaxSpeed(MOTOR_MAX_SPEED); 
     setCurrentPosition(0);
-    setPinsInverted(true, true, false);
+    setPinsInverted(false, false, false);
 }
 
 long local_round(float value) {
