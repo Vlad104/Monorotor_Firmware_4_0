@@ -7,27 +7,16 @@
 
 class Dozator : public AccelStepper {
 public:
-    Dozator(PinName step_pin, PinName dir_pin);
+    Dozator(PinName step_pin, PinName dir_pin, PinName enable_pin);
     ~Dozator() {};
 
-    void set_volume(float volume);
-    void set_feedrate(float feedrate);
-    void set_accel(float accel);
-
-    void start_movement();
+    void start_movement(float volume, float feedrate, float accel);
     void stop_movement();
-    void continues_movement();
-
-    // bool stopped();
-
-    #ifdef TEST
-        void print(Serial* port);
-    #endif
+    void continues_movement(float feedrate, float accel);
 
 private:
-    long    volume_;    // imp
-    float   feedrate_;  // imp/sec
-    float   accel_;     // imp/sec^2
+    DigitalOut* enable;
+    long prepare_volume(float volume);
 };
 
 #endif // Dozator

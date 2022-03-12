@@ -5,60 +5,49 @@
 #include <cstdlib>
 
 #include "params.h"
-#include "Dozator.h"
-#include "MultiDozator.h"
+#include "Store.h"
+
+typedef void (*ControllerCallback)();
 
 class Controller {
 public:
-    Controller();
+    Controller(Store* store, ControllerCallback start, ControllerCallback continues, ControllerCallback stop);
     ~Controller();
 
-    void start_control(Dozator* A, Dozator* B);
-    void loop();
+    void send_answer(char answer);
+    #ifdef DEBUG
+    void send_store();
+    void send_delay(long delay);
+    void send_times(long t1, long t2);
+    #endif
 
+#ifndef TESTS
 private:
+#endif
+
     Serial*         usb_; 
     Serial*         rs485_;
-    Serial*         remote_;
     Serial*         last_port_;
-    DigitalOut*     transmit_enable_;
-    
-    DigitalOut*     ena_;
 
-    InterruptIn*    pedal_;
-    InterruptIn*    alert_A_;
-    InterruptIn*    alert_B_;
-    DigitalIn*      alert_btnA_;
-    DigitalIn*      alert_btnB_;
-    DigitalIn*      pedal_btn_;
+    Store*          store_;
 
-    MultiDozator    dozators_;
+    ControllerCallback start_;
+    ControllerCallback continues_;
+    ControllerCallback stop_;
 
     void usb_event();
     void rs485_event();
-    void remote_event();
     void serial_event(Serial* port);
+
     void read_command(Serial* port);
     void read_params(Serial* port);
+
     void make_command(char command);
-    void make_params(char message_type, const char str_buffer[STR_SIZE]);
-    float str_to_float(const char str_buffer[STR_SIZE]);
-    void send_answer(Serial* port, char answer);
+    void make_params(char message_type, const char* str_buffer);
 
-    void single_loop(bool& was_stopped);
-
-    void pedal_rise();
-    void pedal_fall();
-    void alert_rise_A();
-    void alert_fall_A();
-    void alert_rise_B();
-    void alert_fall_B();
-    
-    #ifdef TEST
-        Timer t_test;
-        long ms1;
-        long ms2;
-    #endif
+    bool is_param_symbol(char symbol);
+    void parse_params(const char* str_buffer, int size);
+    float str_to_float(const char* str_buffer);
 };
 
 #endif // CONTROLLER_H

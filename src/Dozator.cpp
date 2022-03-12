@@ -1,62 +1,39 @@
 #include "Dozator.h"
 
-Dozator::Dozator(PinName step_pin, PinName dir_pin) :
-    // AccelStepper(1, step_pin, dir_pin),
-    AccelStepper(step_pin, dir_pin),
-    volume_(0), feedrate_(0.0), accel_(0.0)
-{
+Dozator::Dozator(PinName step_pin, PinName dir_pin, PinName enable_pin) : AccelStepper(step_pin, dir_pin) {
+    enable = new DigitalOut(enable_pin);
     setMinPulseWidth(PULSE_WIDTH);
     setMaxSpeed(MOTOR_MAX_SPEED); 
     setCurrentPosition(0);
     setPinsInverted(false, false, false);
 }
 
-long local_round(float value) {
-    long floor_value = (long) value;
-    float mod = value - (float)floor_value;
-    return (mod > 0.5) ? floor_value + 1 : floor_value;
+long Dozator::prepare_volume(float volume) {
+    if (volume > 100000000.0 || volume < -100000000.0) {
+        return (long) volume;
+    }
+    return (volume > 0.0) ? (long) (volume + 0.5) : (long) (volume - 0.5);
 }
 
-void Dozator::set_volume(float volume) {
-    volume_ = local_round(volume);
-}
-
-void Dozator::set_feedrate(float feedrate) {
-    feedrate_ = feedrate;
-}
-
-void Dozator::set_accel(float accel) {
-    accel_ = accel;
-}
-
-void Dozator::start_movement() {
+void Dozator::start_movement(float volume, float feedrate, float accel) {
+    long value = prepare_volume(volume);
     setCurrentPosition(0);
-    setAcceleration(accel_);  
-    move(volume_);
-    setMaxSpeed(feedrate_);
+    setAcceleration(accel);
+    move(value);
+    setMaxSpeed(feedrate);
+    enable->write(1);
+}
+
+void Dozator::continues_movement(float feedrate, float accel) {
+    setCurrentPosition(0);
+    setAcceleration(accel);
+    move(1000000000);
+    setMaxSpeed(feedrate);
+    enable->write(1);
 }
 
 void Dozator::stop_movement() {
-    setCurrentPosition(0); 
-    move(0);
-}
-
-void Dozator::continues_movement() {
     setCurrentPosition(0);
-    setAcceleration(accel_);  
-    move(1000000000);
-    setMaxSpeed(feedrate_);   
+    move(0);
+    enable->write(0);
 }
-
-// bool Dozator::stopped() { // inline
-//     return distanceToGo() == 0;
-// }
-
-#ifdef TEST   
-    void Dozator::print(Serial* port) {            
-        port->printf("\r\nDozator:\r\n");
-        port->printf("volume_: %ld\r\n", volume_);
-        port->printf("feedrate_: %f\r\n", feedrate_);
-        port->printf("accel_: %f\r\n", accel_);
-    }
-#endif
